@@ -22,6 +22,8 @@ typedef struct {
     float producaoMel;    // produção média em kg/mês 
 } Abelha; 
 
+//Funções para Limpar e Pausar o buffer de entrada
+
 void limparBuffer(){
     int c;
     while ((c = getchar()) != '\n' && c != EOF);
@@ -32,6 +34,8 @@ void pausar(){
     limparBuffer();
     getchar();
 }
+
+//Funções para Abelhas
 
 void cadastrarAbelha(Abelha tipo_abelha[], int contadorAbelhas){
     for(int i = contadorAbelhas; i <= contadorAbelhas; i++){
@@ -93,6 +97,113 @@ void buscarPorNomePopular(Abelha tipo_abelha[], int contadorAbelhas){
     }
 }
 
+void alterarDadosAbelha(Abelha tipo_abelha[], int contadorAbelhas){
+    int idBusca;
+    int encontrado = 0;
+    printf("Digite o ID da Abelha para alterar dados: ");
+    scanf("%d", &idBusca);
+    for(int i = 0; i < contadorAbelhas; i++){
+        if(tipo_abelha[i].id == idBusca){
+            printf("Alterando dados da Abelha ID %d:\n", idBusca);
+            printf("Novo Nome Popular: ");
+            scanf("%40s", tipo_abelha[i].nomePopular);
+            printf("Novo Nome Científico: ");
+            scanf("%50s", tipo_abelha[i].nomeCientifico);
+            printf("Nova Região: ");
+            scanf("%30s", tipo_abelha[i].regiao);
+            printf("Nova Produção Média de Mel (kg/mês): ");
+            scanf("%f", &tipo_abelha[i].producaoMel);
+            system("clear || cls");
+            printf("\nDados da Abelha atualizados com sucesso!\n");
+            encontrado = 1;
+            break;
+        }
+    }
+    if(encontrado != 1){
+        printf("Abelha com o ID '%d' não encontrada.\n", idBusca);
+    }
+}
+
+int removerAbelha(Abelha tipo_abelha[], int contadorAbelhas){
+    int idBusca;
+    int encontrado = 0;
+    printf("Digite o ID da Abelha para remover: ");
+    scanf("%d", &idBusca);
+    for(int i = 0; i < contadorAbelhas; i++){
+        if(tipo_abelha[i].id == idBusca){
+            for(int j = i; j < contadorAbelhas - 1; j++){
+                tipo_abelha[j] = tipo_abelha[j + 1];
+            }
+            contadorAbelhas--;
+            for(int k = 0; k < contadorAbelhas; k++){
+                tipo_abelha[k].id = k;
+            }
+            system("clear || cls");
+            printf("\nAbelha removida com sucesso!\n");
+            encontrado = 1;
+            break;
+        }
+    }
+    if(encontrado != 1){
+        printf("Abelha com o ID '%d' não encontrada.\n", idBusca);
+    }
+    return contadorAbelhas;
+}
+
+//Funções para Sensores
+
+int cadastrarSensores(Sensor tipo_sensor[], int contadorSensores, Abelha tipo_abelha[], int contadorAbelhas){
+    if(contadorAbelhas == 0){
+        printf("Nenhuma abelha disponível para associar. Cadastre uma abelha primeiro.\n");
+        return contadorSensores;
+    }
+    if(contadorSensores >= MAX_SENSORES){
+        printf("Limite máximo de sensores atingido!\n");
+        return contadorSensores;
+    }
+
+    int idAbelhaBusca;
+    int encontrado = 0;
+    printf("Digite o ID da Abelha para associar ao sensor: ");
+    scanf("%d", &idAbelhaBusca);
+    for(int i = 0; i < contadorAbelhas; i++){
+        if(tipo_abelha[i].id == idAbelhaBusca){
+            encontrado = 1;
+            break;
+        }
+    }
+    if(encontrado == 0){
+        printf("Abelha com o ID '%d' não encontrada. Não foi possível cadastrar o sensor.\n", idAbelhaBusca);
+        return contadorSensores;
+    }
+
+    tipo_sensor[contadorSensores].id = contadorSensores;
+    printf("Tipo do Sensor: ");
+    scanf("%30s", tipo_sensor[contadorSensores].tipo);
+    printf("Valor inicial: ");
+    scanf("%f", &tipo_sensor[contadorSensores].valor);
+    tipo_sensor[contadorSensores].idAbelha = idAbelhaBusca;
+    system("clear || cls");
+    printf("\nSensor cadastrado com sucesso!\n");
+
+    return contadorSensores + 1;
+}
+
+void listarSensores(Sensor tipo_sensor[], int contadorSensores){
+    if(contadorSensores == 0){
+        printf("Nenhum sensor cadastrado.\n");
+        return;
+    }
+    printf("Lista de Sensores Cadastrados:\n");
+    for(int i = 0; i < contadorSensores; i++){
+        printf("ID: %d\n", tipo_sensor[i].id);
+        printf("Tipo do Sensor: %s\n", tipo_sensor[i].tipo);
+        printf("Valor Atual: %.2f\n", tipo_sensor[i].valor);
+        printf("ID da Abelha Associada: %d\n", tipo_sensor[i].idAbelha);
+        printf("-------------------------\n");
+    }
+}
+
 int main(){
     system("clear || cls");
 
@@ -133,32 +244,33 @@ int main(){
                         case 6:
                             cadastrarAbelha(tipo_abelha, contadorAbelhas);
                             contadorAbelhas++;
-                            getchar();
                             printf("Pressione ENTER para continuar...");
-                            getchar();
+                            pausar();
                             system("clear || cls");
                             break;
                         case 7:
                             listarAbelhas(tipo_abelha, contadorAbelhas);
-                            getchar();
                             printf("Pressione ENTER para continuar...");
-                            getchar();
+                            pausar();
                             system("clear || cls");
                             break;
                         case 8:
                             buscarPorNomePopular(tipo_abelha, contadorAbelhas);
-                            getchar();
                             printf("Pressione ENTER para continuar...");
-                            getchar();
+                            pausar();
                             system("clear || cls");
                             break;
                         case 9:
-                            // Lógica para alterar dados
-                            //alterarDadosAbelha(tipo_abelha, contadorAbelhas);
+                            alterarDadosAbelha(tipo_abelha, contadorAbelhas);
+                            printf("Pressione ENTER para continuar...");
+                            pausar();
+                            system("clear || cls");
                             break;
                         case 10:
-                            // Lógica para remover abelha
-                            //removerAbelha(tipo_abelha, &contadorAbelhas);
+                            contadorAbelhas = removerAbelha(tipo_abelha, contadorAbelhas);
+                            printf("Pressione ENTER para continuar...");
+                            pausar();
+                            system("clear || cls");
                             break;
                         case 11:
                             // Voltar ao menu principal
@@ -173,8 +285,8 @@ int main(){
                     printf("===== SUBMENU 2 - GERENCIAR SENSORES =====\n");
                     printf("6. Cadastrar Sensor\n");
                     printf("7. Listar Sensores\n");
-                    printf("8. Buscar por Tipo de Sensor\n");
-                    printf("9. Alterar Dados\n");
+                    printf("8. Buscar por ID da Abelha\n");
+                    printf("9. Alterar leitura\n");
                     printf("10. Remover Sensor\n");
                     printf("11. Voltar ao Menu Principal\n");
                     printf("Escolha uma opção: ");
@@ -184,25 +296,37 @@ int main(){
 
                     switch(opcao){
                         case 6:
-                            // Lógica para cadastrar sensor
-                            //gerenciarSensores(tipo_sensor, contadorSensores);
-                            contadorSensores++;
+                            contadorSensores = cadastrarSensores(tipo_sensor, contadorSensores, tipo_abelha, contadorAbelhas);
+                            printf("Pressione ENTER para continuar...");
+                            pausar();
+                            system("clear || cls");
                             break;
                         case 7:
-                            // Lógica para listar sensores
-                            //listarSensores(tipo_sensor, contadorSensores);
+                            listarSensores(tipo_sensor, contadorSensores);
+                            printf("Pressione ENTER para continuar...");
+                            pausar();
+                            system("clear || cls");
                             break;
                         case 8:
-                            // Lógica para buscar por tipo de sensor
-                            //buscarPorTipoSensor(tipo_sensor, contadorSensores);
+                            // Lógica para buscar sensor por tipo de id da Abelha
+                            //buscarPorIdAbelha(tipo_sensor, contadorSensores);
+                            printf("Pressione ENTER para continuar...");
+                            pausar();
+                            system("clear || cls");
                             break;
                         case 9:
                             // Lógica para alterar dados
                             //alterarDadosSensor(tipo_sensor, contadorSensores);
+                            printf("Pressione ENTER para continuar...");
+                            pausar();
+                            system("clear || cls");
                             break;
                         case 10:
                             // Lógica para remover sensor
                             //removerSensor(tipo_sensor, &contadorSensores);
+                            printf("Pressione ENTER para continuar...");
+                            pausar();
+                            system("clear || cls");
                             break;
                         case 11:
                             // Voltar ao menu principal
