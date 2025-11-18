@@ -48,34 +48,36 @@ int cadastrarAbelha(Abelha tipo_abelha[], int contadorAbelhas){
             scanf(" %40[^\n]",tipo_abelha[i].nomePopular);
             printf("Nome Cientifico: ");
             scanf(" %50[^\n]",tipo_abelha[i].nomeCientifico);
-            printf("Escolha a Região:\n");
-            printf("1 - Norte\n");
-            printf("2 - Nordeste\n");
-            printf("3 - Centro-Oeste\n");
-            printf("4 - Sudeste\n");
-            printf("5 - Sul\n");
-            printf("Opcao: ");
-            scanf("%d", &opcaoRegiao);
-            switch(opcaoRegiao){
-                case 1:
-                    strcpy(tipo_abelha[i].regiao, "Norte");
-                    break;
-                case 2:
-                    strcpy(tipo_abelha[i].regiao, "Nordeste");
-                    break;
-                case 3:
-                    strcpy(tipo_abelha[i].regiao, "Centro-Oeste");
-                    break;
-                case 4:
-                    strcpy(tipo_abelha[i].regiao, "Sudeste");
-                    break;
-                case 5:
-                    strcpy(tipo_abelha[i].regiao, "Sul");
-                    break;
-                default:
-                    printf("Regiao invalida! Definindo como 'Desconhecida'.\n");
-                    strcpy(tipo_abelha[i].regiao, "Desconhecida");
-            }
+            do{
+                printf("Escolha a Regiao:\n");
+                printf("1 - Norte\n");
+                printf("2 - Nordeste\n");
+                printf("3 - Centro-Oeste\n");
+                printf("4 - Sudeste\n");
+                printf("5 - Sul\n");
+                printf("Opcao: ");
+                scanf("%d", &opcaoRegiao);
+                switch(opcaoRegiao){
+                    case 1:
+                        strcpy(tipo_abelha[i].regiao, "Norte");
+                        break;
+                    case 2:
+                        strcpy(tipo_abelha[i].regiao, "Nordeste");
+                        break;
+                    case 3:
+                        strcpy(tipo_abelha[i].regiao, "Centro-Oeste");
+                        break;
+                    case 4:
+                        strcpy(tipo_abelha[i].regiao, "Sudeste");
+                        break;
+                    case 5:
+                        strcpy(tipo_abelha[i].regiao, "Sul");
+                        break;
+                    default:
+                        system("clear || cls");
+                        printf("Regiao invalida! Digite Novamente!\n");
+                }
+            }while(opcaoRegiao < 1 || opcaoRegiao > 5);
             printf("Producao Media de Mel (kg/mes): ");
             scanf("%f", &tipo_abelha[i].producaoMel);
             system("clear || cls");
@@ -211,27 +213,29 @@ int cadastrarSensores(Sensor tipo_sensor[], int contadorSensores, Abelha tipo_ab
     tipo_sensor[contadorSensores].id = contadorSensores;
 
     int opcaoTipo;
-    printf("Escolha o tipo do Sensor:\n");
-    printf("1 - Temperatura\n");
-    printf("2 - Umidade\n");
-    printf("3 - Luminosidade\n");
-    printf("Opcao: ");
-    scanf("%d", &opcaoTipo);
-
-    switch(opcaoTipo){
-        case 1:
-            strcpy(tipo_sensor[contadorSensores].tipo, "Temperatura");
-            break;
-        case 2:
-            strcpy(tipo_sensor[contadorSensores].tipo, "Umidade");
-            break;
-        case 3:
-            strcpy(tipo_sensor[contadorSensores].tipo, "Luminosidade");
-            break;
-        default:
-            printf("Tipo invalido! Sensor nao cadastrado.\n");
-            return contadorSensores;
-    }
+    do{
+        printf("Escolha o tipo do Sensor:\n");
+        printf("1 - Temperatura\n");
+        printf("2 - Umidade\n");
+        printf("3 - Luminosidade\n");
+        printf("Opcao: ");
+        scanf("%d", &opcaoTipo);
+        switch(opcaoTipo){
+            case 1:
+                strcpy(tipo_sensor[contadorSensores].tipo, "Temperatura");
+                break;
+            case 2:
+                strcpy(tipo_sensor[contadorSensores].tipo, "Umidade");
+                break;
+            case 3:
+                strcpy(tipo_sensor[contadorSensores].tipo, "Luminosidade");
+                break;
+            default:
+                system("clear || cls");
+                printf("Tipo invalido! Digite novamente!\n");
+        }
+    }while(opcaoTipo < 1 || opcaoTipo > 3);
+    
 
     printf("Valor inicial: ");
     scanf("%f", &tipo_sensor[contadorSensores].valor);
@@ -362,7 +366,28 @@ void relatorioMediaTemperatura(Sensor tipo_sensor[], int contadorSensores){
     printf("Media de Temperatura dos Sensores: %.2f\n", mediaTemperatura);
 }
 
-// void relatorioQuantidadeAbelhasPorRegiao(Abelha tipo_abelha[], int contadorAbelhas){
+void relatorioQuantidadeAbelhasPorRegiao(Abelha tipo_abelha[], int contadorAbelhas){
+    int contadorRegioes[5] = {0}; 
+    for(int i = 0; i < contadorAbelhas; i++){
+        if(strcmp(tipo_abelha[i].regiao, "Norte") == 0){
+            contadorRegioes[0]++;
+        } else if(strcmp(tipo_abelha[i].regiao, "Nordeste") == 0){
+            contadorRegioes[1]++;
+        } else if(strcmp(tipo_abelha[i].regiao, "Centro-Oeste") == 0){
+            contadorRegioes[2]++;
+        } else if(strcmp(tipo_abelha[i].regiao, "Sudeste") == 0){
+            contadorRegioes[3]++;
+        } else if(strcmp(tipo_abelha[i].regiao, "Sul") == 0){
+            contadorRegioes[4]++;
+        }
+    }
+    printf("Quantidade de Abelhas por Regiao:\n");
+    printf("Norte: %d\n", contadorRegioes[0]);
+    printf("Nordeste: %d\n", contadorRegioes[1]);
+    printf("Centro-Oeste: %d\n", contadorRegioes[2]);
+    printf("Sudeste: %d\n", contadorRegioes[3]);
+    printf("Sul: %d\n", contadorRegioes[4]);
+}
 
 int main(){
     system("clear || cls");
@@ -513,7 +538,9 @@ int main(){
                             system("clear || cls");
                             break;
                         case 6:
-                            //relatorioQuantidadeAbelhasPorRegiao(tipo_abelha, contadorAbelhas);
+                            relatorioQuantidadeAbelhasPorRegiao(tipo_abelha, contadorAbelhas);
+                            pausar();
+                            system("clear || cls");
                             break;
                         case 7:
                             // Voltar ao menu principal
