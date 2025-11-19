@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 //chcp 65001 no terminal para virar português
 
@@ -22,7 +23,7 @@ typedef struct {
     float producaoMel;    // produção média em kg/mês 
 } Abelha; 
 
-//Funções para Limpar e Pausar o buffer de entrada
+//Funções para assistência no sistema
 
 void limparBuffer(){
     int c;
@@ -45,9 +46,9 @@ int cadastrarAbelha(Abelha tipo_abelha[], int contadorAbelhas){
             encontrado = 1;
             tipo_abelha[i].id = contadorAbelhas;
             printf("Nome Popular: ");
-            scanf(" %40[^\n]",tipo_abelha[i].nomePopular);
+            scanf(" %39[^\n]",tipo_abelha[i].nomePopular);
             printf("Nome Cientifico: ");
-            scanf(" %50[^\n]",tipo_abelha[i].nomeCientifico);
+            scanf(" %49[^\n]",tipo_abelha[i].nomeCientifico);
             do{
                 printf("Escolha a Regiao:\n");
                 printf("1 - Norte\n");
@@ -56,7 +57,10 @@ int cadastrarAbelha(Abelha tipo_abelha[], int contadorAbelhas){
                 printf("4 - Sudeste\n");
                 printf("5 - Sul\n");
                 printf("Opcao: ");
-                scanf("%d", &opcaoRegiao);
+                if(scanf("%d", &opcaoRegiao) != 1){
+                    while(getchar() != '\n'); 
+                    opcaoRegiao = -1;
+                }
                 switch(opcaoRegiao){
                     case 1:
                         strcpy(tipo_abelha[i].regiao, "Norte");
@@ -78,8 +82,15 @@ int cadastrarAbelha(Abelha tipo_abelha[], int contadorAbelhas){
                         printf("Regiao invalida! Digite Novamente!\n");
                 }
             }while(opcaoRegiao < 1 || opcaoRegiao > 5);
-            printf("Producao Media de Mel (kg/mes): ");
-            scanf("%f", &tipo_abelha[i].producaoMel);
+            do{
+                printf("Producao Media de Mel (kg/mes): ");
+                if(scanf("%f", &tipo_abelha[i].producaoMel) != 1){
+                    while(getchar() != '\n'); 
+                    tipo_abelha[i].producaoMel = -1;
+                }
+                system("clear || cls");
+                printf("Valor invalido! Digite novamente!\n");
+            }while(tipo_abelha[i].producaoMel < 0);
             system("clear || cls");
             printf("\nAbelha cadastrada com sucesso!\n");
             return encontrado;
@@ -109,20 +120,35 @@ void listarAbelhas(Abelha tipo_abelha[], int contadorAbelhas){
 
 void buscarPorNomePopular(Abelha tipo_abelha[], int contadorAbelhas){
     char nomeBusca[40];
+    char nomeBuscaLower[40];
+    char nomeLower[40];
     int encontrado = 0;
+    int lenBusca;
+    int lenNome;
     printf("Digite o Nome Popular da Abelha para busca: ");
-    getchar();
-    scanf("%s", nomeBusca);
+    scanf(" %39[^\n]", nomeBusca);
+
+    lenBusca = strlen(nomeBusca);
+    for(int i = 0; i < lenBusca && i < sizeof(nomeBuscaLower) - 1; i++){
+        nomeBuscaLower[i] = tolower((unsigned char) nomeBusca[i]);
+    }
+    nomeBuscaLower[i] = '\0';
+
     for(int i = 0; i < contadorAbelhas; i++){
-        if(strcmp(tipo_abelha[i].nomePopular, nomeBusca) == 0){
+        lenNome = strlen(tipo_abelha[i].nomePopular);
+        for(int j = 0; j < lenNome && j < sizeof(nomeLower) - 1; j++){
+            nomeLower[j] = tolower((unsigned char) tipo_abelha[i].nomePopular[j]);
+        }
+        nomeLower[j] = '\0';
+        if(strstr(nomeLower, nomeBuscaLower) != NULL){
             printf("Abelha Encontrada:\n");
             printf("ID: %d\n", tipo_abelha[i].id);
             printf("Nome Popular: %s\n", tipo_abelha[i].nomePopular);
             printf("Nome Cientifico: %s\n", tipo_abelha[i].nomeCientifico);
             printf("Regiao: %s\n", tipo_abelha[i].regiao);
             printf("Producao Media de Mel (kg/mes): %.2f\n", tipo_abelha[i].producaoMel);
+            printf("-------------------------\n");
             encontrado = 1;
-            break;
         }
     }
     if(encontrado != 1){
@@ -410,8 +436,12 @@ int main(){
         printf("3. Relatorios\n");
         printf("4. Sair\n");
         printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
-
+        if(scanf("%d", &opcao) != 1){
+            while(getchar() != '\n'); 
+            opcao = -1;
+            printf("Opcao invalida! Tente novamente.\n");
+        }
+        
         system("clear || cls");
 
         switch(opcao){
@@ -425,7 +455,11 @@ int main(){
                     printf("10. Remover Abelha\n");
                     printf("11. Voltar ao Menu Principal\n");
                     printf("Escolha uma opcao: ");
-                    scanf("%d", &opcao);
+                    if(scanf("%d", &opcao) != 1){
+                        while(getchar() != '\n'); 
+                        opcao = -1;
+                        printf("Opcao invalida! Tente novamente.\n");
+                    }
 
                     system("clear || cls");
 
@@ -459,7 +493,6 @@ int main(){
                             system("clear || cls");
                             break;
                         case 11:
-                            // Voltar ao menu principal
                             break;
                         default:
                             printf("Opcao invalida! Tente novamente.\n");        
@@ -476,7 +509,11 @@ int main(){
                     printf("10. Remover Sensor\n");
                     printf("11. Voltar ao Menu Principal\n");
                     printf("Escolha uma opcao: ");
-                    scanf("%d", &opcao);
+                    if(scanf("%d", &opcao) != 1){
+                        while(getchar() != '\n'); 
+                        opcao = -1;
+                        printf("Opcao invalida! Tente novamente.\n");
+                    }
 
                     system("clear || cls");
 
@@ -507,7 +544,6 @@ int main(){
                             system("clear || cls");
                             break;
                         case 11:
-                            // Voltar ao menu principal
                             break;
                         default:
                             printf("Opcao invalida! Tente novamente.\n");        
@@ -522,7 +558,11 @@ int main(){
                     printf("6. Quantidade de Abelhas por Regiao\n");
                     printf("7. Voltar ao Menu Principal\n");
                     printf("Escolha uma opcao: ");
-                    scanf("%d", &opcao);
+                    if(scanf("%d", &opcao) != 1){
+                        while(getchar() != '\n'); 
+                        opcao = -1;
+                        printf("Opcao invalida! Tente novamente.\n");
+                    }
 
                     system("clear || cls");
 
@@ -543,7 +583,6 @@ int main(){
                             system("clear || cls");
                             break;
                         case 7:
-                            // Voltar ao menu principal
                             break;
                         default:
                             printf("Opcao invalida! Tente novamente.\n");        
