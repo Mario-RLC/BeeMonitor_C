@@ -1,3 +1,7 @@
+
+//Aqui só estou estudando algumas coisas que talvez utilize depois
+
+
 // ...existing code...
 void buscarPorNomePopular(Abelha tipo_abelha[], int contadorAbelhas){
     char nomeBusca[40];
@@ -11,24 +15,24 @@ void buscarPorNomePopular(Abelha tipo_abelha[], int contadorAbelhas){
         return;
     }
 
+    /* converte termo de busca para minusculas (seguro quanto a overflow) */
     size_t lenBusca = strlen(nomeBusca);
-    /* converte nomeBusca para minusculas com seguranca de limite */
     size_t i = 0;
-    for (; i < sizeof(nomeBuscaLower) - 1 && i < lenBusca; i++){
+    for (; i < sizeof(nomeBuscaLower) - 1 && i < lenBusca; i++) {
         nomeBuscaLower[i] = (char) tolower((unsigned char) nomeBusca[i]);
     }
     nomeBuscaLower[i] = '\0';
 
-    /* percorre as abelhas e compara usando versions minusculas */
+    /* percorre abelhas, converte cada nomePopular para minusculas e usa strstr */
     for (int idx = 0; idx < contadorAbelhas; idx++) {
         size_t lenNome = strlen(tipo_abelha[idx].nomePopular);
         size_t j = 0;
-        for (; j < sizeof(nomeLower) - 1 && j < lenNome; j++){
+        for (; j < sizeof(nomeLower) - 1 && j < lenNome; j++) {
             nomeLower[j] = (char) tolower((unsigned char) tipo_abelha[idx].nomePopular[j]);
         }
         nomeLower[j] = '\0';
 
-        if (strstr(nomeLower, nomeBuscaLower) != NULL) { /* busca case-insensitive por substring */
+        if (strstr(nomeLower, nomeBuscaLower) != NULL) { /* substring case-insensitive */
             printf("Abelha Encontrada:\n");
             printf("ID: %d\n", tipo_abelha[idx].id);
             printf("Nome Popular: %s\n", tipo_abelha[idx].nomePopular);

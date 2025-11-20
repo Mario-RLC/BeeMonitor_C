@@ -123,30 +123,31 @@ void buscarPorNomePopular(Abelha tipo_abelha[], int contadorAbelhas){
     char nomeBuscaLower[40];
     char nomeLower[40];
     int encontrado = 0;
-    int lenBusca;
-    int lenNome;
     printf("Digite o Nome Popular da Abelha para busca: ");
     scanf(" %39[^\n]", nomeBusca);
 
-    lenBusca = strlen(nomeBusca);
-    for(int i = 0; i < lenBusca && i < sizeof(nomeBuscaLower) - 1; i++){
+    size_t lenBusca = strlen(nomeBusca);
+    size_t i;
+    for(i = 0; i < lenBusca && i < sizeof(nomeBuscaLower) - 1; i++){
         nomeBuscaLower[i] = tolower((unsigned char) nomeBusca[i]);
     }
     nomeBuscaLower[i] = '\0';
 
-    for(int i = 0; i < contadorAbelhas; i++){
-        lenNome = strlen(tipo_abelha[i].nomePopular);
-        for(int j = 0; j < lenNome && j < sizeof(nomeLower) - 1; j++){
-            nomeLower[j] = tolower((unsigned char) tipo_abelha[i].nomePopular[j]);
+    for(int j = 0; j < contadorAbelhas; j++){
+        size_t lenNome = strlen(tipo_abelha[j].nomePopular);
+        size_t k;
+        for(k = 0; k < lenNome && k < sizeof(nomeLower) - 1; k++){
+            nomeLower[k] = tolower((unsigned char) tipo_abelha[j].nomePopular[k]);
         }
-        nomeLower[j] = '\0';
+        nomeLower[k] = '\0';
+        
         if(strstr(nomeLower, nomeBuscaLower) != NULL){
             printf("Abelha Encontrada:\n");
-            printf("ID: %d\n", tipo_abelha[i].id);
-            printf("Nome Popular: %s\n", tipo_abelha[i].nomePopular);
-            printf("Nome Cientifico: %s\n", tipo_abelha[i].nomeCientifico);
-            printf("Regiao: %s\n", tipo_abelha[i].regiao);
-            printf("Producao Media de Mel (kg/mes): %.2f\n", tipo_abelha[i].producaoMel);
+            printf("ID: %d\n", tipo_abelha[j].id);
+            printf("Nome Popular: %s\n", tipo_abelha[j].nomePopular);
+            printf("Nome Cientifico: %s\n", tipo_abelha[j].nomeCientifico);
+            printf("Regiao: %s\n", tipo_abelha[j].regiao);
+            printf("Producao Media de Mel (kg/mes): %.2f\n", tipo_abelha[j].producaoMel);
             printf("-------------------------\n");
             encontrado = 1;
         }
@@ -159,19 +160,65 @@ void buscarPorNomePopular(Abelha tipo_abelha[], int contadorAbelhas){
 void alterarDadosAbelha(Abelha tipo_abelha[], int contadorAbelhas){
     int idBusca;
     int encontrado = 0;
-    printf("Digite o ID da Abelha para alterar dados: ");
-    scanf("%d", &idBusca);
+    int opcaoRegiao;
+    do{
+        printf("Digite o ID da Abelha para alterar dados: ");
+        if(scanf("%d", &idBusca) != 1){
+            while(getchar() != '\n');
+            idBusca = -1;
+        }
+        system("clear || cls");
+        printf("Valor invalido! Digite novamente!\n");
+    }while(idBusca < 0);
     for(int i = 0; i < contadorAbelhas; i++){
         if(tipo_abelha[i].id == idBusca){
             printf("Alterando dados da Abelha ID %d:\n", idBusca);
             printf("Novo Nome Popular: ");
-            scanf("%40s", tipo_abelha[i].nomePopular);
+            scanf(" %39[^\n]",tipo_abelha[i].nomePopular);
             printf("Novo Nome Cientifico: ");
-            scanf("%50s", tipo_abelha[i].nomeCientifico);
-            printf("Nova Regiao: ");
-            scanf("%30s", tipo_abelha[i].regiao);
-            printf("Nova Producao Media de Mel (kg/mes): ");
-            scanf("%f", &tipo_abelha[i].producaoMel);
+            scanf(" %49[^\n]",tipo_abelha[i].nomeCientifico);
+            do{
+                printf("Escolha a Nova Regiao:\n");
+                printf("1 - Norte\n");
+                printf("2 - Nordeste\n");
+                printf("3 - Centro-Oeste\n");
+                printf("4 - Sudeste\n");
+                printf("5 - Sul\n");
+                printf("Opcao: ");
+                if(scanf("%d", &opcaoRegiao) != 1){
+                    while(getchar() != '\n'); 
+                    opcaoRegiao = -1;
+                }
+                switch(opcaoRegiao){
+                    case 1:
+                        strcpy(tipo_abelha[i].regiao, "Norte");
+                        break;
+                    case 2:
+                        strcpy(tipo_abelha[i].regiao, "Nordeste");
+                        break;
+                    case 3:
+                        strcpy(tipo_abelha[i].regiao, "Centro-Oeste");
+                        break;
+                    case 4:
+                        strcpy(tipo_abelha[i].regiao, "Sudeste");
+                        break;
+                    case 5:
+                        strcpy(tipo_abelha[i].regiao, "Sul");
+                        break;
+                    default:
+                        system("clear || cls");
+                        printf("Regiao invalida! Digite Novamente!\n");
+                }
+            }while(opcaoRegiao < 1 || opcaoRegiao > 5);
+            do{
+                printf("Producao Media de Mel (kg/mes): ");
+                if(scanf("%f", &tipo_abelha[i].producaoMel) != 1){
+                    while(getchar() != '\n'); 
+                    tipo_abelha[i].producaoMel = -1;
+                }
+                system("clear || cls");
+                printf("Valor invalido! Digite novamente!\n");
+            }while(tipo_abelha[i].producaoMel < 0);
             system("clear || cls");
             printf("\nDados da Abelha atualizados com sucesso!\n");
             encontrado = 1;
@@ -186,25 +233,51 @@ void alterarDadosAbelha(Abelha tipo_abelha[], int contadorAbelhas){
 int removerAbelha(Abelha tipo_abelha[], int contadorAbelhas){
     int idBusca;
     int encontrado = 0;
-    printf("Digite o ID da Abelha para remover: ");
-    scanf("%d", &idBusca);
-    for(int i = 0; i < contadorAbelhas; i++){
-        if(tipo_abelha[i].id == idBusca){
-            for(int j = i; j < contadorAbelhas - 1; j++){
-                tipo_abelha[j] = tipo_abelha[j + 1];
-            }
-            contadorAbelhas--;
-            for(int k = 0; k < contadorAbelhas; k++){
-                tipo_abelha[k].id = k;
-            }
+    int certeza;
+    do{
+        printf("Digite o ID da Abelha para remover: ");
+        if(scanf("%d", &idBusca) != 1){
+            while(getchar() != '\n');
+            idBusca = -1;
             system("clear || cls");
-            printf("\nAbelha removida com sucesso!\n");
-            encontrado = 1;
-            break;
+            printf("Valor invalido! Digite novamente!\n");
+        }else if(idBusca < 0){
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
         }
-    }
-    if(encontrado != 1){
-        printf("Abelha com o ID '%d' nao encontrada.\n", idBusca);
+    }while(idBusca < 0);
+    do{
+        printf("Deseja realmente remover a Abelha com ID %d? (1-Sim / 2-Nao): ", idBusca);
+        if(scanf("%d", &certeza) != 1){
+            while(getchar() != '\n');
+            certeza = -1;
+        }
+        system("clear || cls");
+        printf("Valor invalido! Digite novamente!\n");
+    }while(certeza < 1 || certeza > 2);
+    if(certeza == 1){
+        for(int i = 0; i < contadorAbelhas; i++){
+            if(tipo_abelha[i].id == idBusca){
+                for(int j = i; j < contadorAbelhas - 1; j++){
+                    tipo_abelha[j] = tipo_abelha[j + 1];
+                }
+                contadorAbelhas--;
+                for(int k = 0; k < contadorAbelhas; k++){
+                    tipo_abelha[k].id = k;
+                }
+                system("clear || cls");
+                printf("\nAbelha removida com sucesso!\n");
+                encontrado = 1;
+                break;
+            }
+        }
+        if(encontrado != 1){
+            system("clear || cls");
+            printf("Abelha com o ID '%d' nao encontrada.\n", idBusca);
+        }
+    }else{
+        system("clear || cls");
+        printf("Remocao da Abelha cancelada.\n");
     }
     return contadorAbelhas;
 }
