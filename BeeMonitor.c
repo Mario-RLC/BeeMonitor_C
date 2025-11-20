@@ -3,8 +3,6 @@
 #include <string.h>
 #include <ctype.h>
 
-//chcp 65001 no terminal para virar português
-
 #define MAX_ABELHAS 50 
 #define MAX_SENSORES 100 
 
@@ -58,7 +56,7 @@ int cadastrarAbelha(Abelha tipo_abelha[], int contadorAbelhas){
                 printf("5 - Sul\n");
                 printf("Opcao: ");
                 if(scanf("%d", &opcaoRegiao) != 1){
-                    while(getchar() != '\n'); 
+                    limparBuffer(); 
                     opcaoRegiao = -1;
                 }
                 switch(opcaoRegiao){
@@ -85,7 +83,7 @@ int cadastrarAbelha(Abelha tipo_abelha[], int contadorAbelhas){
             do{
                 printf("Producao Media de Mel (kg/mes): ");
                 if(scanf("%f", &tipo_abelha[i].producaoMel) != 1){
-                    while(getchar() != '\n'); 
+                    limparBuffer(); 
                     tipo_abelha[i].producaoMel = -1;
                 }
                 system("clear || cls");
@@ -123,20 +121,20 @@ void buscarPorNomePopular(Abelha tipo_abelha[], int contadorAbelhas){
     char nomeBuscaLower[40];
     char nomeLower[40];
     int encontrado = 0;
+    int lenBusca, lenNome;
+    int i, j, k;
     printf("Digite o Nome Popular da Abelha para busca: ");
     scanf(" %39[^\n]", nomeBusca);
 
-    size_t lenBusca = strlen(nomeBusca);
-    size_t i;
-    for(i = 0; i < lenBusca && i < sizeof(nomeBuscaLower) - 1; i++){
+    lenBusca = strlen(nomeBusca);
+    for(i = 0; i < lenBusca && i < 40 - 1; i++){
         nomeBuscaLower[i] = tolower((unsigned char) nomeBusca[i]);
     }
     nomeBuscaLower[i] = '\0';
 
-    for(int j = 0; j < contadorAbelhas; j++){
-        size_t lenNome = strlen(tipo_abelha[j].nomePopular);
-        size_t k;
-        for(k = 0; k < lenNome && k < sizeof(nomeLower) - 1; k++){
+    for(j = 0; j < contadorAbelhas; j++){
+        lenNome = strlen(tipo_abelha[j].nomePopular);
+        for(k = 0; k < lenNome && k < 40 - 1; k++){
             nomeLower[k] = tolower((unsigned char) tipo_abelha[j].nomePopular[k]);
         }
         nomeLower[k] = '\0';
@@ -164,11 +162,14 @@ void alterarDadosAbelha(Abelha tipo_abelha[], int contadorAbelhas){
     do{
         printf("Digite o ID da Abelha para alterar dados: ");
         if(scanf("%d", &idBusca) != 1){
-            while(getchar() != '\n');
+            limparBuffer();
             idBusca = -1;
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
+        }else if(idBusca < 0){
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
         }
-        system("clear || cls");
-        printf("Valor invalido! Digite novamente!\n");
     }while(idBusca < 0);
     for(int i = 0; i < contadorAbelhas; i++){
         if(tipo_abelha[i].id == idBusca){
@@ -186,7 +187,7 @@ void alterarDadosAbelha(Abelha tipo_abelha[], int contadorAbelhas){
                 printf("5 - Sul\n");
                 printf("Opcao: ");
                 if(scanf("%d", &opcaoRegiao) != 1){
-                    while(getchar() != '\n'); 
+                    limparBuffer(); 
                     opcaoRegiao = -1;
                 }
                 switch(opcaoRegiao){
@@ -213,7 +214,7 @@ void alterarDadosAbelha(Abelha tipo_abelha[], int contadorAbelhas){
             do{
                 printf("Producao Media de Mel (kg/mes): ");
                 if(scanf("%f", &tipo_abelha[i].producaoMel) != 1){
-                    while(getchar() != '\n'); 
+                    limparBuffer(); 
                     tipo_abelha[i].producaoMel = -1;
                 }
                 system("clear || cls");
@@ -230,14 +231,15 @@ void alterarDadosAbelha(Abelha tipo_abelha[], int contadorAbelhas){
     }
 }
 
-int removerAbelha(Abelha tipo_abelha[], int contadorAbelhas){
+// Funções para remover abelhas e sensores associados
+
+int pedirIdRemocaoAbelha(){
     int idBusca;
-    int encontrado = 0;
     int certeza;
     do{
         printf("Digite o ID da Abelha para remover: ");
         if(scanf("%d", &idBusca) != 1){
-            while(getchar() != '\n');
+            limparBuffer();
             idBusca = -1;
             system("clear || cls");
             printf("Valor invalido! Digite novamente!\n");
@@ -249,35 +251,73 @@ int removerAbelha(Abelha tipo_abelha[], int contadorAbelhas){
     do{
         printf("Deseja realmente remover a Abelha com ID %d? (1-Sim / 2-Nao): ", idBusca);
         if(scanf("%d", &certeza) != 1){
-            while(getchar() != '\n');
+            limparBuffer();
             certeza = -1;
-        }
-        system("clear || cls");
-        printf("Valor invalido! Digite novamente!\n");
-    }while(certeza < 1 || certeza > 2);
-    if(certeza == 1){
-        for(int i = 0; i < contadorAbelhas; i++){
-            if(tipo_abelha[i].id == idBusca){
-                for(int j = i; j < contadorAbelhas - 1; j++){
-                    tipo_abelha[j] = tipo_abelha[j + 1];
-                }
-                contadorAbelhas--;
-                for(int k = 0; k < contadorAbelhas; k++){
-                    tipo_abelha[k].id = k;
-                }
-                system("clear || cls");
-                printf("\nAbelha removida com sucesso!\n");
-                encontrado = 1;
-                break;
-            }
-        }
-        if(encontrado != 1){
             system("clear || cls");
-            printf("Abelha com o ID '%d' nao encontrada.\n", idBusca);
+            printf("Valor invalido! Digite novamente!\n");
+        }else if(certeza < 1 || certeza > 2){
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
         }
+    }while(certeza < 1 || certeza > 2);
+
+    if(certeza == 1){ 
+        return idBusca;
     }else{
         system("clear || cls");
         printf("Remocao da Abelha cancelada.\n");
+        return -1;
+    }
+}
+
+int removerSensoresPorAbelha(Sensor tipo_sensor[], int contadorSensores, int idRemovida){
+    int i = 0;
+    while(i < contadorSensores){
+        if(tipo_sensor[i].idAbelha == idRemovida){
+            /* remove sensor i */
+            for(int j = i; j < contadorSensores - 1; j++){
+                tipo_sensor[j] = tipo_sensor[j + 1];
+            }
+            contadorSensores--;
+            /* nao incrementa i para verificar o novo elemento que chegou em i */
+        } else {
+            if(tipo_sensor[i].idAbelha > idRemovida){
+                tipo_sensor[i].idAbelha--; /* acompanha a remocao da abelha */
+            }
+            i++;
+        }
+    }
+    /* renumera ids dos sensores */
+    for(int k = 0; k < contadorSensores; k++){
+        tipo_sensor[k].id = k;
+    }
+    return contadorSensores;
+}
+
+int removerAbelhaPorId(Abelha tipo_abelha[], int contadorAbelhas, int idRemovida){
+    int i;
+    int encontrado = 0;
+    for(i = 0; i < contadorAbelhas; i++){
+        if(tipo_abelha[i].id == idRemovida){
+            /* remove abelha i */
+            for(int j = i; j < contadorAbelhas - 1; j++){
+                tipo_abelha[j] = tipo_abelha[j + 1];
+            }
+            contadorAbelhas--;
+            encontrado = 1;
+            break;
+        }
+    }
+    if(encontrado == 1){
+        /* renumera ids das abelhas */
+        for(int k = 0; k < contadorAbelhas; k++){
+            tipo_abelha[k].id = k;
+        }
+        system("clear || cls");
+        printf("Abelha com o ID '%d' removida com sucesso.\n", idRemovida);
+    }else{
+        system("clear || cls");
+        printf("Abelha com o ID '%d' nao encontrada.\n", idRemovida);
     }
     return contadorAbelhas;
 }
@@ -285,19 +325,30 @@ int removerAbelha(Abelha tipo_abelha[], int contadorAbelhas){
 //Funções para Sensores
 
 int cadastrarSensores(Sensor tipo_sensor[], int contadorSensores, Abelha tipo_abelha[], int contadorAbelhas){
+     int encontrado = 0;
     if(contadorAbelhas == 0){
         printf("Nenhuma abelha disponivel para associar. Cadastre uma abelha primeiro.\n");
-        return contadorSensores;
+        return encontrado;
     }
     if(contadorSensores >= MAX_SENSORES){
         printf("Limite maximo de sensores atingido!\n");
-        return contadorSensores;
+        return encontrado;
     }
 
     int idAbelhaBusca;
-    int encontrado = 0;
-    printf("Digite o ID da Abelha para associar ao sensor: ");
-    scanf("%d", &idAbelhaBusca);
+
+    do{
+        printf("Digite o ID da Abelha para associar ao sensor: ");
+        if(scanf("%d", &idAbelhaBusca) != 1){
+            limparBuffer();
+            idAbelhaBusca = -1;
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!.\n");
+        }else if(idAbelhaBusca < 0){
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!.\n");
+        }
+    }while(idAbelhaBusca < 0);
     for(int i = 0; i < contadorAbelhas; i++){
         if(tipo_abelha[i].id == idAbelhaBusca){
             encontrado = 1;
@@ -306,7 +357,7 @@ int cadastrarSensores(Sensor tipo_sensor[], int contadorSensores, Abelha tipo_ab
     }
     if(encontrado == 0){
         printf("Abelha com o ID '%d' nao encontrada. Nao foi possivel cadastrar o sensor.\n", idAbelhaBusca);
-        return contadorSensores;
+        return encontrado;
     }
 
     tipo_sensor[contadorSensores].id = contadorSensores;
@@ -318,7 +369,10 @@ int cadastrarSensores(Sensor tipo_sensor[], int contadorSensores, Abelha tipo_ab
         printf("2 - Umidade\n");
         printf("3 - Luminosidade\n");
         printf("Opcao: ");
-        scanf("%d", &opcaoTipo);
+        if(scanf("%d", &opcaoTipo) != 1){
+            limparBuffer();
+            opcaoTipo = -1;
+        }
         switch(opcaoTipo){
             case 1:
                 strcpy(tipo_sensor[contadorSensores].tipo, "Temperatura");
@@ -335,14 +389,23 @@ int cadastrarSensores(Sensor tipo_sensor[], int contadorSensores, Abelha tipo_ab
         }
     }while(opcaoTipo < 1 || opcaoTipo > 3);
     
-
-    printf("Valor inicial: ");
-    scanf("%f", &tipo_sensor[contadorSensores].valor);
+    do{
+        printf("Valor inicial: ");
+        if(scanf("%f", &tipo_sensor[contadorSensores].valor) != 1){
+            limparBuffer();
+            tipo_sensor[contadorSensores].valor = -1;
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
+        }else if(tipo_sensor[contadorSensores].valor < 0){
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
+        }
+    }while(tipo_sensor[contadorSensores].valor < 0);
     tipo_sensor[contadorSensores].idAbelha = idAbelhaBusca;
     system("clear || cls");
     printf("\nSensor cadastrado com sucesso!\n");
 
-    return contadorSensores + 1;
+    return encontrado;
 }
 
 void listarSensores(Sensor tipo_sensor[], int contadorSensores){
@@ -363,8 +426,18 @@ void listarSensores(Sensor tipo_sensor[], int contadorSensores){
 void buscarPorIdAbelha(Sensor tipo_sensor[], int contadorSensores){
     int idAbelhaBusca;
     int encontrado = 0;
-    printf("Digite o ID da Abelha para buscar sensores associados: ");
-    scanf("%d", &idAbelhaBusca);
+    do{
+        printf("Digite o ID da Abelha para buscar sensores associados: ");
+        if(scanf("%d", &idAbelhaBusca) != 1){
+            limparBuffer();
+            idAbelhaBusca = -1;
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
+        }else if(idAbelhaBusca < 0){
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
+        }
+    }while(idAbelhaBusca < 0);
     printf("Sensores associados a Abelha ID %d:\n", idAbelhaBusca);
     for(int i = 0; i < contadorSensores; i++){
         if(tipo_sensor[i].idAbelha == idAbelhaBusca){
@@ -383,15 +456,59 @@ void buscarPorIdAbelha(Sensor tipo_sensor[], int contadorSensores){
 void alterarDadosSensores(Sensor tipo_sensor[], int contadorSensores){
     int idBusca;
     int encontrado = 0;
-    printf("Digite o ID do Sensor para alterar dados: ");
-    scanf("%d", &idBusca);
+    int opcaoTipo;
+    do{
+        printf("Digite o ID do Sensor para alterar dados: ");
+        if(scanf("%d", &idBusca) != 1){
+            limparBuffer();
+            idBusca = -1;
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
+        }else if(idBusca < 0){
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
+        }
+    }while(idBusca < 0);
     for(int i = 0; i < contadorSensores; i++){
         if(tipo_sensor[i].id == idBusca){
             printf("Alterando dados do Sensor ID %d:\n", idBusca);
-            printf("Novo Tipo do Sensor(Temperatura, Umidade e Luminosidade): ");
-            scanf("%30s", tipo_sensor[i].tipo);
-            printf("Novo Valor Atual: ");
-            scanf("%f", &tipo_sensor[i].valor);
+            do{
+                printf("Escolha o Novo tipo do Sensor:\n");
+                printf("1 - Temperatura\n");
+                printf("2 - Umidade\n");
+                printf("3 - Luminosidade\n");
+                printf("Opcao: ");
+                if(scanf("%d", &opcaoTipo) != 1){
+                    limparBuffer();
+                    opcaoTipo = -1;
+                }
+                switch(opcaoTipo){
+                    case 1:
+                        strcpy(tipo_sensor[i].tipo, "Temperatura");
+                        break;
+                    case 2:
+                        strcpy(tipo_sensor[i].tipo, "Umidade");
+                        break;
+                    case 3:
+                        strcpy(tipo_sensor[i].tipo, "Luminosidade");
+                        break;
+                    default:
+                        system("clear || cls");
+                        printf("Tipo invalido! Digite novamente!\n");
+                }
+            }while(opcaoTipo < 1 || opcaoTipo > 3);
+            do{
+                printf("Novo Valor inicial: ");
+                if(scanf("%f", &tipo_sensor[i].valor) != 1){
+                    limparBuffer();
+                    tipo_sensor[i].valor = -1;
+                    system("clear || cls");
+                    printf("Valor invalido! Digite novamente!\n");
+                }else if(tipo_sensor[i].valor < 0){
+                    system("clear || cls");
+                    printf("Valor invalido! Digite novamente!\n");
+                }
+            }while(tipo_sensor[i].valor < 0);
             system("clear || cls");
             printf("\nDados do Sensor atualizados com sucesso!\n");
             encontrado = 1;
@@ -406,14 +523,35 @@ void alterarDadosSensores(Sensor tipo_sensor[], int contadorSensores){
 int removerSensores(Sensor tipo_sensor[], int contadorSensores){
     int idBusca;
     int encontrado = 0;
-    printf("Digite o ID do Sensor para remover: ");
-    scanf("%d", &idBusca);
-    for(int i = 0; i < contadorSensores; i++){
-        if(tipo_sensor[i].id == idBusca){
-            for(int j = i; j < contadorSensores - 1; j++){
-                tipo_sensor[j] = tipo_sensor[j + 1];
-            }
-            contadorSensores--;
+    int certeza;
+    do{
+        printf("Digite o ID do Sensor para remover: ");
+        if(scanf("%d", &idBusca) != 1){
+            limparBuffer();
+            idBusca = -1;
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
+        }else if(idBusca < 0){
+            system("clear || cls");
+            printf("Valor invalido! Digite novamente!\n");
+        }
+    }while(idBusca < 0);
+    do{
+        printf("Deseja realmente remover o Sensor com ID %d? (1-Sim / 2-Nao): ", idBusca);
+        if(scanf("%d", &certeza) != 1){
+            limparBuffer();
+            certeza = -1;
+        }
+        system("clear || cls");
+        printf("Valor invalido! Digite novamente!\n");
+    }while(certeza < 1 || certeza > 2);
+    if(certeza == 1){
+        for(int i = 0; i < contadorSensores; i++){
+            if(tipo_sensor[i].id == idBusca){
+                for(int j = i; j < contadorSensores - 1; j++){
+                    tipo_sensor[j] = tipo_sensor[j + 1];
+                }
+                contadorSensores--;
             for(int k = 0; k < contadorSensores; k++){
                 tipo_sensor[k].id = k;
             }
@@ -421,10 +559,13 @@ int removerSensores(Sensor tipo_sensor[], int contadorSensores){
             printf("\nSensor removido com sucesso!\n");
             encontrado = 1;
             break;
+            }else if(encontrado != 1){
+                printf("Sensor com o ID '%d' nao encontrado.\n", idBusca);
+            }
         }
-    }
-    if(encontrado != 1){
-        printf("Sensor com o ID '%d' nao encontrado.\n", idBusca);
+    }else{
+        system("clear || cls");
+        printf("Remocao do Sensor cancelada.\n");
     }
     return contadorSensores;
 }
@@ -499,8 +640,11 @@ int main(){
     // Variável para opções do menu
     int opcao;
 
-    // Variável para verificar se incrementa o contador de abelhas
+    // Variável para verificar se incrementa o contador de abelhas e sensores
     int encontradoCadastrar;
+
+    // Variável para remoção de abelha e sensores associados
+    int idRemovida;
 
     do{
         printf("===== SISTEMA BEE MONITOR =====\n");
@@ -510,7 +654,7 @@ int main(){
         printf("4. Sair\n");
         printf("Escolha uma opcao: ");
         if(scanf("%d", &opcao) != 1){
-            while(getchar() != '\n'); 
+            limparBuffer(); 
             opcao = -1;
             printf("Opcao invalida! Tente novamente.\n");
         }
@@ -529,7 +673,7 @@ int main(){
                     printf("11. Voltar ao Menu Principal\n");
                     printf("Escolha uma opcao: ");
                     if(scanf("%d", &opcao) != 1){
-                        while(getchar() != '\n'); 
+                        limparBuffer(); 
                         opcao = -1;
                         printf("Opcao invalida! Tente novamente.\n");
                     }
@@ -561,7 +705,11 @@ int main(){
                             system("clear || cls");
                             break;
                         case 10:
-                            contadorAbelhas = removerAbelha(tipo_abelha, contadorAbelhas);
+                            idRemovida = pedirIdRemocaoAbelha();
+                            if(idRemovida >= 0){
+                                contadorSensores = removerSensoresPorAbelha(tipo_sensor, contadorSensores, idRemovida);
+                                contadorAbelhas = removerAbelhaPorId(tipo_abelha, contadorAbelhas, idRemovida);
+                            }
                             pausar();
                             system("clear || cls");
                             break;
@@ -583,7 +731,7 @@ int main(){
                     printf("11. Voltar ao Menu Principal\n");
                     printf("Escolha uma opcao: ");
                     if(scanf("%d", &opcao) != 1){
-                        while(getchar() != '\n'); 
+                        limparBuffer(); 
                         opcao = -1;
                         printf("Opcao invalida! Tente novamente.\n");
                     }
@@ -592,7 +740,10 @@ int main(){
 
                     switch(opcao){
                         case 6:
-                            contadorSensores = cadastrarSensores(tipo_sensor, contadorSensores, tipo_abelha, contadorAbelhas);
+                            encontradoCadastrar = cadastrarSensores(tipo_sensor, contadorSensores, tipo_abelha, contadorAbelhas);
+                            if(encontradoCadastrar == 1){
+                                contadorSensores++;
+                            }
                             pausar();
                             system("clear || cls");
                             break;
@@ -632,7 +783,7 @@ int main(){
                     printf("7. Voltar ao Menu Principal\n");
                     printf("Escolha uma opcao: ");
                     if(scanf("%d", &opcao) != 1){
-                        while(getchar() != '\n'); 
+                        limparBuffer(); 
                         opcao = -1;
                         printf("Opcao invalida! Tente novamente.\n");
                     }
