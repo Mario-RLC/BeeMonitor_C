@@ -639,28 +639,32 @@ void relatorioMediaTemperatura(Sensor tipo_sensor[], int contadorSensores){
 }
 
 void relatorioQuantidadeAbelhasPorRegiao(Abelha tipo_abelha[], int contadorAbelhas){
-    int contadorRegioes[5] = {0};
+    int contadorRegiaoN = 0;
+    int contadorRegiaoNE = 0;
+    int contadorRegiaoCO = 0;
+    int contadorRegiaoSE = 0;
+    int contadorRegiaoS = 0;
     int i;
 
     for(i = 0; i < contadorAbelhas; i++){
         if(strcmp(tipo_abelha[i].regiao, "Norte") == 0){
-            contadorRegioes[0]++;
+            contadorRegiaoN++;
         } else if(strcmp(tipo_abelha[i].regiao, "Nordeste") == 0){
-            contadorRegioes[1]++;
+            contadorRegiaoNE++;
         } else if(strcmp(tipo_abelha[i].regiao, "Centro-Oeste") == 0){
-            contadorRegioes[2]++;
+            contadorRegiaoCO++;
         } else if(strcmp(tipo_abelha[i].regiao, "Sudeste") == 0){
-            contadorRegioes[3]++;
+            contadorRegiaoSE++;
         } else if(strcmp(tipo_abelha[i].regiao, "Sul") == 0){
-            contadorRegioes[4]++;
+            contadorRegiaoS++;
         }
     }
     printf("Quantidade de Abelhas por Regiao:\n");
-    printf("Norte: %d\n", contadorRegioes[0]);
-    printf("Nordeste: %d\n", contadorRegioes[1]);
-    printf("Centro-Oeste: %d\n", contadorRegioes[2]);
-    printf("Sudeste: %d\n", contadorRegioes[3]);
-    printf("Sul: %d\n", contadorRegioes[4]);
+    printf("Norte: %d\n", contadorRegiaoN);
+    printf("Nordeste: %d\n", contadorRegiaoNE);
+    printf("Centro-Oeste: %d\n", contadorRegiaoCO);
+    printf("Sudeste: %d\n", contadorRegiaoSE);
+    printf("Sul: %d\n", contadorRegiaoS);
 }
 
 int main(){
