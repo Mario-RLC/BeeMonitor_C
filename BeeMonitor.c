@@ -62,10 +62,10 @@ int cadastrarAbelha(Abelha tipo_abelha[], int contadorAbelhas){
             printf("4 - Sudeste\n");
             printf("5 - Sul\n");
             printf("Opcao: ");
-            if(scanf("%d", &opcaoRegiao) != 1){
-                limparBuffer(); 
+            if(scanf("%d", &opcaoRegiao) != 1){ 
                 opcaoRegiao = -1;
             }
+            limparBuffer();
             switch(opcaoRegiao){
                 case 1:
                     strcpy(tipo_abelha[contadorAbelhas].regiao, "Norte");
@@ -214,9 +214,9 @@ void alterarDadosAbelha(Abelha tipo_abelha[], int contadorAbelhas){
                 printf("5 - Sul\n");
                 printf("Opcao: ");
                 if(scanf("%d", &opcaoRegiao) != 1){
-                    limparBuffer(); 
                     opcaoRegiao = -1;
                 }
+                limparBuffer(); 
                 switch(opcaoRegiao){
                     case 1:
                         strcpy(tipo_abelha[i].regiao, "Norte");
@@ -401,9 +401,9 @@ int cadastrarSensores(Sensor tipo_sensor[], int contadorSensores, Abelha tipo_ab
         printf("3 - Luminosidade\n");
         printf("Opcao: ");
         if(scanf("%d", &opcaoTipo) != 1){
-            limparBuffer();
             opcaoTipo = -1;
         }
+        limparBuffer();
         switch(opcaoTipo){
             case 1:
                 strcpy(tipo_sensor[contadorSensores].tipo, "Temperatura");
@@ -541,9 +541,9 @@ void alterarDadosSensores(Sensor tipo_sensor[], int contadorSensores){
                 printf("3 - Luminosidade\n");
                 printf("Opcao: ");
                 if(scanf("%d", &opcaoTipo) != 1){
-                    limparBuffer();
                     opcaoTipo = -1;
                 }
+                limparBuffer();
                 switch(opcaoTipo){
                     case 1:
                         strcpy(tipo_sensor[i].tipo, "Temperatura");
