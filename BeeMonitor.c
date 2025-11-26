@@ -49,10 +49,10 @@ int cadastrarAbelha(Abelha tipo_abelha[], int contadorAbelhas){
         encontrado = 1;
         tipo_abelha[contadorAbelhas].id = contadorAbelhas;
         printf("Nome Popular: ");
-        scanf(" %39[^\n]",tipo_abelha[contadorAbelhas].nomePopular);
+        scanf(" %39[^\n]", tipo_abelha[contadorAbelhas].nomePopular);
         limparBuffer();
         printf("Nome Cientifico: ");
-        scanf(" %49[^\n]",tipo_abelha[contadorAbelhas].nomeCientifico);
+        scanf(" %49[^\n]", tipo_abelha[contadorAbelhas].nomeCientifico);
         limparBuffer();
         do{
             printf("Escolha a Regiao:\n");
@@ -141,14 +141,15 @@ void buscarPorNomePopular(Abelha tipo_abelha[], int contadorAbelhas){
     }
 
     printf("Digite o Nome Popular da Abelha para busca: ");
-    scanf(" %39[^\n]", nomeBusca);
+    scanf(" %39[^\n]", nomeBusca); 
+    limparBuffer();
 
     lenBusca = strlen(nomeBusca);
     for(i = 0; i < lenBusca && i < 40 - 1; i++){
         nomeBuscaLower[i] = tolower((unsigned char) nomeBusca[i]);
     }
     nomeBuscaLower[i] = '\0';
-
+                                                                            
     for(j = 0; j < contadorAbelhas; j++){
         lenNome = strlen(tipo_abelha[j].nomePopular);
         for(k = 0; k < lenNome && k < 40 - 1; k++){
